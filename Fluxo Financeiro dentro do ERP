@@ -1,0 +1,86 @@
+CONTAS A PAGAR (Fornecedor)
+É o controle de todas as obrigações financeiras da empresa com terceiros.
+Exemplo:
+
+Compra de medicamentos
+Serviços de manutenção
+Contrato de limpeza
+Energia elétrica
+
+Tudo isso vira uma obrigação financeira.
+
+-----------------------------------------------------------------------------
+Como nasce um título a pagar no ERP?
+-> Fluxo Sistêmico Completo <-
+
+1- Área de Compras gera um Pedido de Compra
+2- Fornecedor entrega o produto
+3- Nota Fiscal é lançada no sistema
+4- O ERP gera automaticamente um título financeiro
+5- Esse título vai para o módulo Financeiro
+6- Financeiro agenda pagamento
+7- Quando paga → realiza a baixa
+8- Sistema gera lançamento contábil automático
+
+---------------------------------------------------------------------------
+O que é um Título Financeiro?
+É o registro da obrigação:
+
+Fornecedor
+Valor
+Data de vencimento
+Centro de custo
+Conta contábil vinculada
+
+Ele é a base do fluxo de caixa.
+
+------------------------------------------------------------------------
+CONTAS A RECEBER (Clientes / Convênios)
+
+Aqui entra:
+
+Faturamento hospitalar
+Cobrança de convênios
+Repasses médicos
+Coparticipação de pacientes
+
+--------------------------------------------------------------------
+Fluxo de Contas a Receber
+
+1- Serviço é prestado (consulta, exame, internação)
+2- Sistema gera faturamento
+3- É criado um título a receber
+4- Cliente ou convênio paga
+5- Financeiro realiza baixa
+6- Sistema gera contabilização
+
+---------------------------------------------------------------------
+Integração entre Módulos
+
+O financeiro NÃO trabalha isolado.
+
+Ele recebe informações de:
+
+Suprimentos
+Fiscal
+Faturamento
+Estoque
+Sistemas externos
+
+E envia informações para:
+
+Contábil
+BI
+Data Warehouse (como o Snowflake)
+
+---------------------------------------------------------------------
+VISÃO TÉCNICA
+
+Significa que você pode precisar:
+
+Consultar tabela de títulos no banco
+Verificar status (Aberto, Pago, Cancelado)
+Conferir se houve baixa duplicada
+Validar se houve erro na integração
+
+--------------------------------------------------------------------
