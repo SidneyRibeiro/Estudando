@@ -1,0 +1,103 @@
+Módulo Contábil no ERP -> Em um ERP como o TOTVS Datasul, o módulo contábil recebe dados de todos os outros módulos.
+
+-------------------------------------------------------------------------------------------------------------------------
+Plano de Contas -> É a estrutura onde a empresa organiza suas contas contábeis.
+
+Exemplo simples:
+
+Ativo (Caixa, Banco, Estoque)
+Passivo (Fornecedores, Impostos a pagar)
+Receita (Receita hospitalar, Receita de convênios)
+Despesa (Energia, Salários, Medicamentos)
+
+!!Cada lançamento precisa ir para uma conta correta.!!
+
+-----------------------------------------------------------------------------------------------------------
+Lançamento Contábil -> É o registro formal da movimentação financeira.
+
+Exemplo:
+Pagamento fornecedor:
+
+Débito: Fornecedor
+Crédito: Banco
+
+O sistema gera isso automaticamente via parametrização.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DRE -> Demonstração do Resultado do Exercício.
+Mostra:
+
+Receitas
+(-) Despesas
+= Resultado (lucro ou prejuízo)
+
+!!Se houver algum pagamento duplicado, aumentaria as despesas e consequentemente afeta o resultado.!! ATENCAO
+
+------------------------------------------------------------------------------------------------------------------
+Módulo Fiscal
+
+Aqui entra:
+
+Nota fiscal
+Impostos (ICMS, PIS, COFINS, ISS)
+Apuração de impostos
+SPED ou EFD (Escrituração Fiscal Digital)
+
+O módulo fiscal controla obrigações tributárias.
+
+Exemplo:
+
+Nota de compra → gera:
+
+Crédito de imposto
+Título financeiro
+Movimento de estoque
+Lançamento contábil
+
+Tudo é integrado!
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+*Integração Financeiro + Fiscal + Contábil*
+
+Fluxo completo:
+
+Compra → NF → Fiscal calcula imposto → Financeiro gera título → Contábil registra lançamento → BI consolida dados
+
+Se houver erro na nota fiscal:
+
+→ Pode gerar imposto errado
+→ Pode gerar título errado
+→ Pode gerar contábil errado
+→ Pode afetar DRE
+
+É efeito dominó.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Atentar que se uma NF for lançada incorretamente no sistema pode causar impacto financeiro, fiscal, contabil e em relatórios.
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Relação com os módulos do ERP
+
+Fluxo em sistema como o MV Sistemas:
+
+Atendimento → Faturamento → Geração de título a receber → Lançamento contábil de Receita → Impacto na DRE
+
+Depois, quando recebe:
+
+Baixa financeira → Movimentação bancária → Atualização do caixa
+
+-----------------------------------------------------------------------------------------------
+Receita = aquilo que a empresa ganhou
+Despesa = aquilo que a empresa gastou
+Passivo = aquilo que a empresa deve
+Ativo = aquilo que a empresa tem
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+em SQL forma de verificar se há duplicidade, consultando a tabela de nf, filtrando por CNPJ do fornecedor, nºnota, serie e valor:
+
+SELECT fornecedor_cnpj, numero_nota, serie, COUNT(*)
+FROM notas_fiscais
+GROUP BY fornecedor_cnpj, numero_nota, serie
+HAVING COUNT(*) > 1;
+
+------------------------------------------------------------------------------------------------------------------------------------------
