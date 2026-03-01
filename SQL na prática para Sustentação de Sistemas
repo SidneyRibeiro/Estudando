@@ -1,0 +1,173 @@
+SQL para detectar duplicidade
+
+Imagine uma tabela: notas_fiscais
+
+Campos:
+
+id_nota
+fornecedor
+cnpj
+numero_nota
+serie
+valor
+data_emissao
+
+Como identificar notas duplicadas pelo mesmo fornecedor?
+SELECT fornecedor, numero_nota, serie, COUNT(*)
+FROM notas_fiscais
+GROUP BY fornecedor, numero_nota, serie
+HAVING COUNT(*) > 1;
+
+O que isso faz?
+
+Agrupa por fornecedor + número + série
+Conta quantas vezes aparece
+Mostra apenas onde aparece mais de 1 vez
+
+-------------------------------------------------------------------------------------------------------
+Cruzando Fiscal com Financeiro
+
+Agora imagine duas tabelas: notas_fiscais / titulos_financeiros
+
+Campos importantes:
+
+notas_fiscais:
+id_nota
+numero_nota
+fornecedor
+valor
+
+titulos_financeiros:
+id_titulo
+id_nota
+valor
+status
+
+Como descobrir notas que NÃO geraram título?
+SELECT n.id_nota, n.numero_nota
+FROM notas_fiscais n
+LEFT JOIN titulos_financeiros t 
+ON n.id_nota = t.id_nota
+WHERE t.id_nota IS NULL;
+
+O que isso mostra?
+Notas que existem no fiscal mas não têm correspondência no financeiro.
+
+-------------------------------------------------------------------------------------------
+Identificando impacto financeiro
+
+Como identificar títulos duplicados?
+SELECT id_nota, COUNT(*)
+FROM titulos_financeiros
+GROUP BY id_nota
+HAVING COUNT(*) > 1;
+
+Isso mostra notas que geraram mais de um título.
+-------------------------------------------------------------------------------------------
+Verificar o total pago por fornecedor
+SELECT fornecedor, SUM(valor) AS total_pago
+FROM titulos_financeiros
+WHERE status = 'PAGO'
+GROUP BY fornecedor;
+
+----------------------------------------------------------------------------------------
+IN significa: “Está dentro dessa lista?”
+exp:
+SELECT *
+FROM notas_fiscais
+WHERE fornecedor IN ('Empresa A', 'Empresa B');
+
+
+ON significa: “Qual é a regra para juntar?”
+exp:
+ON n.id = t.id_nota
+
+
+JOIN significa: “Vamos juntar duas tabelas para conversar.”
+exp:
+FROM notas n
+JOIN titulos t
+
+
+Unindo Join com On
+exp:
+SELECT *
+FROM notas_fiscais n1
+JOIN notas_fiscais n2
+ON n1.fornecedor = n2.fornecedor;
+
+
+SUM significa: ''Somar valores de uma coluna''
+É a calculadora do banco de dados.
+exp:
+SELECT SUM(valor)
+FROM titulos_financeiros;
+
+
+WHERE → filtra registros
+HAVING → filtra grupos
+
+--------------------------------------------------------------------------------------------------------------
+Perguntas e Respostas (Na prática em PostgreSQL)
+
+1- Qual fornecedor recebeu valor pago maior que o esperado?
+SELECT fornecedor_id, SUM(valor)
+FROM titulos_financeiros
+WHERE status = 'PAGO'
+GROUP BY fornecedor_id;
+
+2-E se eu quiser ver o NOME do fornecedor em vez do ID?
+SELECT f.nome, SUM(t.valor)
+FROM titulos_financeiros t
+JOIN fornecedores f
+ON t.fornecedor_id = f.id
+WHERE t.status = 'PAGO'
+GROUP BY f.nome;
+
+3- Como você descobriria no SQL se existe título duplicado?
+SELECT id_nota, COUNT(*)
+FROM titulos_financeiros
+GROUP BY id_nota
+HAVING COUNT(*) > 1;
+
+4- "Como você evitaria cadastro duplicado de fornecedor?"
+"Criando uma constraint UNIQUE no campo CNPJ para garantir integridade de dados no nível estrutural do banco."
+
+5- Se já existirem CNPJs duplicados na tabela e você tentar criar o UNIQUE…
+Primeiro identificar duplicados:
+
+SELECT cnpj, COUNT(*)
+FROM fornecedores
+GROUP BY cnpj
+HAVING COUNT(*) > 1;
+
+Corrigir os dados (ajustar ou remover duplicados)
+
+Só depois criar a constraint UNIQUE
+
+6- Se o sistema já permitiu duplicidade por anos…
+
+Você acha melhor:
+
+A) Deletar tudo que está duplicado
+B) Investigar antes o impacto
+
+Antes de deletar um fornecedor duplicado, posso rodar algo do tipo:
+
+SELECT *
+FROM titulos_financeiros
+WHERE fornecedor_id = X;
+
+Para ver:
+Esse fornecedor está sendo usado?
+
+Se estiver…
+não pode simplesmente apagar.
+
+
+
+
+
+
+
+
