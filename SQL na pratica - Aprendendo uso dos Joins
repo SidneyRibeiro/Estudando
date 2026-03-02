@@ -1,0 +1,22 @@
+/* A: Listar o nome das atrações com data de apresentação e palco definido. */
+
+SELECT a.nome, g.nome, a.dt_apresentacao, p.nome
+FROM artista a
+INNER JOIN palco p ON p.palco_id = a.palco_id
+INNER JOIN genero g ON g.genero_id = a.genero_id
+
+/* A1: Listar as atrações que vão se apresentar entre os dias 04 e 11 no palco mundo */
+
+SELECT a.nome, g.nome, a.dt_apresentacao, p.nome
+FROM artista a
+INNER JOIN palco p ON p.palco_id = a.palco_id
+INNER JOIN genero g ON g.genero_id = a.genero_id
+WHERE a.dt_apresentacao BETWEEN '2022-09-04' AND '2022-09-11' AND p.nome LIKE '%Mundo'
+ORDER BY a.dt_apresentacao
+
+/* B: Listar todas as atrações, independependente de haver data e palco definidos */
+
+SELECT a.nome, g.nome, a.dt_apresentacao, p.nome
+FROM artista a
+LEFT JOIN palco p ON p.palco_id = a.palco_id
+INNER JOIN genero g ON g.genero_id = a.genero_id
