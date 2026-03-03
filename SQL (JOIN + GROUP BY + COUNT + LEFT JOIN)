@@ -1,0 +1,116 @@
+# 📚 Dia 5 – Estudos de SQL
+
+Hoje aprofundei meus estudos em SQL, focando principalmente em:
+
+* COUNT()
+* GROUP BY
+* HAVING
+* Diferença entre ON e WHERE
+* Comportamento do LEFT JOIN
+
+---
+
+## 🧠 Conceitos Aprendidos
+
+### 🔹 COUNT(*)
+
+Conta todas as linhas da tabela.
+
+```sql
+SELECT COUNT(*)
+FROM titulos_financeiros;
+```
+
+---
+
+### 🔹 COUNT(coluna)
+
+Conta apenas valores NÃO NULL da coluna.
+
+```sql
+SELECT COUNT(valor)
+FROM titulos_financeiros;
+```
+
+---
+
+### 🔹 GROUP BY
+
+Agrupa registros com valores iguais.
+
+```sql
+SELECT fornecedor_id, COUNT(*)
+FROM titulos_financeiros
+GROUP BY fornecedor_id;
+```
+
+---
+
+### 🔹 HAVING
+
+Filtra grupos após o GROUP BY.
+
+```sql
+SELECT fornecedor_id, COUNT(*)
+FROM titulos_financeiros
+GROUP BY fornecedor_id
+HAVING COUNT(*) > 2;
+```
+
+---
+
+## 🧪 Exercício 1
+
+**Mostrar fornecedores que possuem mais de 2 títulos pendentes.**
+
+### ✅ Resolução:
+
+```sql
+SELECT fornecedor_id,
+       COUNT(*) AS total_pendentes
+FROM titulos_financeiros
+WHERE status = 'pendente'
+GROUP BY fornecedor_id
+HAVING COUNT(*) > 2;
+```
+
+---
+
+## 🧪 Exercício 2
+
+**Mostrar todos os fornecedores e a quantidade de títulos pendentes (inclusive quem tem 0).**
+
+### ✅ Resolução:
+
+```sql
+SELECT f.nome,
+       COUNT(t.id) AS total_pendentes
+FROM fornecedores f
+LEFT JOIN titulos_financeiros t
+       ON f.id = t.fornecedor_id
+       AND t.status = 'pendente'
+GROUP BY f.nome;
+```
+
+---
+
+## 🚨 Aprendizado Importante do Dia
+
+* ON define como as tabelas se juntam.
+* WHERE filtra depois da junção.
+* Em LEFT JOIN, colocar condição no WHERE pode transformar a consulta em INNER JOIN.
+* COUNT(*) conta até linhas com NULL.
+* COUNT(coluna) ignora NULL.
+
+---
+
+## 📈 Evolução
+
+Hoje ficou muito claro:
+
+* A ordem lógica do SQL não é a mesma ordem escrita.
+* LEFT JOIN exige atenção ao uso de ON e WHERE.
+* GROUP BY + HAVING são essenciais para análises financeiras.
+
+---
+
